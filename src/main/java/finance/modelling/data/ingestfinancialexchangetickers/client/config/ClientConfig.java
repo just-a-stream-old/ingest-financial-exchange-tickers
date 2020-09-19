@@ -1,12 +1,14 @@
 package finance.modelling.data.ingestfinancialexchangetickers.client.config;
 
+import finance.modelling.fmcommons.data.helper.client.EodHistoricalClientHelper;
+import finance.modelling.fmcommons.data.helper.client.FModellingClientHelper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
-public class WebClientConfig {
+public class ClientConfig {
 
     @Bean
     public WebClient getWebClientBuilder() {
@@ -19,5 +21,15 @@ public class WebClientConfig {
                         .build()
                 )
                 .build();
+    }
+
+    @Bean
+    public EodHistoricalClientHelper eodHistoricalClientHelper() {
+        return new EodHistoricalClientHelper();
+    }
+
+    @Bean
+    public FModellingClientHelper fModellingClientHelper() {
+        return new FModellingClientHelper();
     }
 }
