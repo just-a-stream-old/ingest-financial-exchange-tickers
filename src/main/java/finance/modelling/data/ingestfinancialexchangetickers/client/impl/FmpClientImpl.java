@@ -1,7 +1,7 @@
 package finance.modelling.data.ingestfinancialexchangetickers.client.impl;
 
-import finance.modelling.data.ingestfinancialexchangetickers.client.dto.FmpTickerDTO;
 import finance.modelling.fmcommons.data.helper.client.FModellingClientHelper;
+import finance.modelling.fmcommons.data.schema.fmp.dto.FmpTickerDTO;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;

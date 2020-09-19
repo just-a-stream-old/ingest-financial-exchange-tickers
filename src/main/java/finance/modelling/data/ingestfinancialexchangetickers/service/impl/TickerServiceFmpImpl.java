@@ -1,10 +1,10 @@
 package finance.modelling.data.ingestfinancialexchangetickers.service.impl;
 
 import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherFmpTickerImpl;
-import finance.modelling.data.ingestfinancialexchangetickers.client.dto.FmpTickerDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.client.impl.FmpClientImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.TickerService;
 import finance.modelling.fmcommons.data.logging.LogClient;
+import finance.modelling.fmcommons.data.schema.fmp.dto.FmpTickerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,6 @@
 package finance.modelling.data.ingestfinancialexchangetickers.api.consumer;
 
-import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.KafkaConsumer;
-import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodExchangeDTO;
+import finance.modelling.fmcommons.data.schema.eod.dto.EodExchangeDTO;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.KafkaReceiver;

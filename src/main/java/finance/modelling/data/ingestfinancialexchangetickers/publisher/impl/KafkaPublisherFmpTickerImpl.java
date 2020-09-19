@@ -1,8 +1,8 @@
 package finance.modelling.data.ingestfinancialexchangetickers.publisher.impl;
 
-import finance.modelling.data.ingestfinancialexchangetickers.client.dto.FmpTickerDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.publisher.contract.KafkaPublisher;
 import finance.modelling.fmcommons.data.logging.LogPublisher;
+import finance.modelling.fmcommons.data.schema.fmp.dto.FmpTickerDTO;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 

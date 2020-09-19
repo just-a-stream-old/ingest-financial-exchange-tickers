@@ -2,9 +2,9 @@ package finance.modelling.data.ingestfinancialexchangetickers.service.impl;
 
 import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodExchangeImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.client.contract.EodHistoricalClient;
-import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodExchangeDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.ExchangeService;
 import finance.modelling.fmcommons.data.logging.LogClient;
+import finance.modelling.fmcommons.data.schema.eod.dto.EodExchangeDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
