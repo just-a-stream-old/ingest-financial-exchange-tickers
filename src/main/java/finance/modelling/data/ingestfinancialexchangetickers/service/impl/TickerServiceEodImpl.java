@@ -1,9 +1,7 @@
 package finance.modelling.data.ingestfinancialexchangetickers.service.impl;
 
-import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.contract.KafkaConsumer;
-import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.impl.KafkaConsumerEodExchangeImpl;
+import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.KafkaConsumerEodExchangeImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.client.contract.EodHistoricalClient;
-import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodExchangeDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodTickerDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodTickerImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.TickerService;

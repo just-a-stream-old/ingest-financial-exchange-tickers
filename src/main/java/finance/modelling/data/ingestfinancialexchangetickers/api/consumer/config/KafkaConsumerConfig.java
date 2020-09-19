@@ -18,7 +18,6 @@ public class KafkaConsumerConfig {
 
     @Bean
     public ReceiverOptions<?, ?> receiverOptions() {
-        return ReceiverOptions
-                .create(new HashMap<>(kafkaProperties.buildConsumerProperties()));
+        return ReceiverOptions.create(new HashMap<>(kafkaProperties.buildConsumerProperties()));
     }
 }

@@ -1,6 +1,6 @@
-package finance.modelling.data.ingestfinancialexchangetickers.api.consumer.impl;
+package finance.modelling.data.ingestfinancialexchangetickers.api.consumer;
 
-import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.contract.KafkaConsumer;
+import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.KafkaConsumer;
 import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodExchangeDTO;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;

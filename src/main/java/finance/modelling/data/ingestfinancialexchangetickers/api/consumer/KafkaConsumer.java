@@ -1,4 +1,4 @@
-package finance.modelling.data.ingestfinancialexchangetickers.api.consumer.contract;
+package finance.modelling.data.ingestfinancialexchangetickers.api.consumer;
 
 import reactor.core.publisher.Flux;
 import reactor.kafka.receiver.ReceiverRecord;
