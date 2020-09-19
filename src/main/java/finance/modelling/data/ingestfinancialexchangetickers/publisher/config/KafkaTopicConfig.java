@@ -16,11 +16,11 @@ public class KafkaTopicConfig {
     private final String outputEodTickerTopic;
 
     public KafkaTopicConfig(
-            @Value("${api.publisher.kafka.bindings.partitions}") Integer numPartitions,
-            @Value("${api.publisher.kafka.bindings.replicas}") Integer numReplicas,
-            @Value("${api.publisher.kafka.bindings.fmp.fmpTickers}") String outputFmpTickerTopic,
-            @Value("${api.publisher.kafka.bindings.eod.eodExchanges}") String outputEodExchangeTopic,
-            @Value("${api.publisher.kafka.bindings.eod.eodTickers}") String outputEodTickerTopic) {
+            @Value("${kafka.bindings.publisher.partitions}") Integer numPartitions,
+            @Value("${kafka.bindings.publisher.replicas}") Integer numReplicas,
+            @Value("${kafka.bindings.publisher.fmp.fmpTickers}") String outputFmpTickerTopic,
+            @Value("${kafka.bindings.publisher.eod.eodExchanges}") String outputEodExchangeTopic,
+            @Value("${kafka.bindings.publisher.eod.eodTickers}") String outputEodTickerTopic) {
         this.numPartitions = numPartitions;
         this.numReplicas = numReplicas;
         this.outputFmpTickerTopic = outputFmpTickerTopic;

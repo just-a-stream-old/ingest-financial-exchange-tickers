@@ -34,7 +34,7 @@ public class ExchangeServiceEodImpl implements ExchangeService {
     public ExchangeServiceEodImpl(
             EodHistoricalClient eodHistoricalClient,
             KafkaPublisherEodExchangeImpl kafkaPublisher,
-            @Value("${api.publisher.kafka.bindings.eod.eodExchanges}") String outputExchangeTopic,
+            @Value("${kafka.bindings.publisher.eod.eodExchanges}") String outputExchangeTopic,
             @Value("${client.eod.security.key}") String eodApiKey,
             @Value("${client.eod.baseUrl}") String eodBaseUrl,
             @Value("${client.eod.resource.eodExchanges}") String exchangesResourceUrl,

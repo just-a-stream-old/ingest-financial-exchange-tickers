@@ -35,7 +35,7 @@ public class TickerServiceFmpImpl implements TickerService {
     public TickerServiceFmpImpl(
             FmpClientImpl fmpClient,
             KafkaPublisherFmpTickerImpl kafkaPublisher,
-            @Value("${api.publisher.kafka.bindings.fmp.fmpTickers}") String outputTickerTopic,
+            @Value("${kafka.bindings.publisher.fmp.fmpTickers}") String outputTickerTopic,
             @Value("${client.fmp.security.key}") String fmpApiKey,
             @Value("${client.fmp.baseUrl}") String fmpBaseUrl,
             @Value("${client.fmp.resource.fmpTickers}") String allTickersResourceUrl,

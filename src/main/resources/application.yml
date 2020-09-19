@@ -19,7 +19,7 @@ client:
       eodExchanges: exchanges-list/
       eodTickers: exchange-symbol-list/
 
-api.publisher.kafka.bindings:
+kafka.bindings.publisher:
   partitions: 1
   replicas: 3
   fmp:
@@ -48,13 +48,6 @@ spring:
       auto-offset-reset: earliest
       properties.spring.json.trusted.packages: "*"
 
-
   # Spring WebFlux
   codec:
     max-in-memory-size: "20MB"
-
-  # Spring Data JPA
-  data:
-    mongodb:
-      host: ${DATA_MONGODB_HOST:localhost}
-      port: ${DATA_MONGODB_PORT:27017}

@@ -40,10 +40,10 @@ public class TickerServiceEodImpl implements TickerService {
 
     public TickerServiceEodImpl(
             KafkaConsumerEodExchangeImpl kafkaConsumer,
-            @Value("${api.publisher.kafka.bindings.eod.eodExchanges}") String inputExchangeTopic,
+            @Value("${kafka.bindings.publisher.eod.eodExchanges}") String inputExchangeTopic,
             EodHistoricalClient eodHistoricalClient,
             KafkaPublisherEodTickerImpl kafkaPublisher,
-            @Value("${api.publisher.kafka.bindings.eod.eodTickers}") String outputTickerTopic,
+            @Value("${kafka.bindings.publisher.eod.eodTickers}") String outputTickerTopic,
             @Value("${client.eod.security.key}") String eodApiKey,
             @Value("${client.eod.baseUrl}") String eodBaseUrl,
             @Value("${client.eod.resource.eodTickers}") String tickerResourceUrl,
