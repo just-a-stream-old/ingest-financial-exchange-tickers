@@ -5,6 +5,6 @@ import reactor.core.publisher.Flux;
 
 import java.net.URI;
 
-public interface FModellingClient {
+public interface FmpClient {
     Flux<FmpTickerDTO> getAllCompanyTickers(URI resourceUri);
 }

@@ -1,6 +1,7 @@
-package finance.modelling.data.ingestfinancialexchangetickers.api.publisher;
+package finance.modelling.data.ingestfinancialexchangetickers.publisher.impl;
 
 import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodExchangeDTO;
+import finance.modelling.data.ingestfinancialexchangetickers.publisher.contract.KafkaPublisher;
 import finance.modelling.fmcommons.data.logging.LogPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;

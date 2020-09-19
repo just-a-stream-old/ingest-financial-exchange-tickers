@@ -1,7 +1,6 @@
 package finance.modelling.data.ingestfinancialexchangetickers.service.impl;
 
-import finance.modelling.data.ingestfinancialexchangetickers.api.publisher.KafkaPublisher;
-import finance.modelling.data.ingestfinancialexchangetickers.api.publisher.KafkaPublisherEodExchangeImpl;
+import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodExchangeImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.client.contract.EodHistoricalClient;
 import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodExchangeDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.ExchangeService;
@@ -25,6 +24,7 @@ public class ExchangeServiceEodImpl implements ExchangeService {
 
     private final EodHistoricalClient eodHistoricalClient;
     private final KafkaPublisherEodExchangeImpl kafkaPublisher;
+    private final String outputExchangeTopic;
     private final String eodApiKey;
     private final String eodBaseUrl;
     private final String exchangesResourceUrl;
@@ -34,12 +34,14 @@ public class ExchangeServiceEodImpl implements ExchangeService {
     public ExchangeServiceEodImpl(
             EodHistoricalClient eodHistoricalClient,
             KafkaPublisherEodExchangeImpl kafkaPublisher,
-            @Value("${client.api.eod.security.key}") String eodApiKey,
-            @Value("${client.api.eod.baseUrl}") String eodBaseUrl,
-            @Value("${client.api.eod.resource.eodExchanges}") String exchangesResourceUrl,
-            @Value("${client.api.request.delay.ms}") Long requestDelayMs) {
+            @Value("${api.publisher.kafka.bindings.eod.eodExchanges}") String outputExchangeTopic,
+            @Value("${client.eod.security.key}") String eodApiKey,
+            @Value("${client.eod.baseUrl}") String eodBaseUrl,
+            @Value("${client.eod.resource.eodExchanges}") String exchangesResourceUrl,
+            @Value("${client.eod.request.delay.ms}") Long requestDelayMs) {
         this.eodHistoricalClient = eodHistoricalClient;
         this.kafkaPublisher = kafkaPublisher;
+        this.outputExchangeTopic = outputExchangeTopic;
         this.eodApiKey = eodApiKey;
         this.eodBaseUrl = eodBaseUrl;
         this.exchangesResourceUrl = exchangesResourceUrl;
@@ -51,10 +53,9 @@ public class ExchangeServiceEodImpl implements ExchangeService {
         eodHistoricalClient
                 .getAllExchanges(buildExchangesUri())
                 .delayElements(Duration.ofMillis(requestDelayMs))
-                .doOnNext(exchange -> kafkaPublisher.publishMessage("tickers-eg2-topic", exchange))
+                .doOnNext(exchange -> kafkaPublisher.publishMessage(outputExchangeTopic, exchange))
                 .subscribe(
-                        exchange -> LogClient.logInfoDataItemReceived(
-                                exchange.getCode(), EodExchangeDTO.class, exchangesResourceUrl),
+                        exchange -> LogClient.logInfoDataItemReceived(exchange.getCode(), EodExchangeDTO.class, logResourcePath),
                         this::respondToErrorType,
                         () -> log.info("Process complete: ingestAllExchanges().")
                 );

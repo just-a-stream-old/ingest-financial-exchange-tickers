@@ -1,4 +1,4 @@
-package finance.modelling.data.ingestfinancialexchangetickers.api.publisher.model;
+package finance.modelling.data.ingestfinancialexchangetickers.publisher.model;
 
 import lombok.Data;
 

@@ -11,12 +11,12 @@ import java.net.URI;
 import java.time.Duration;
 
 @Component
-public class FModellingClientImpl {
+public class FmpClientImpl {
 
     private final WebClient client;
     private final FModellingClientHelper fmHelper;
 
-    public FModellingClientImpl(WebClient client, FModellingClientHelper fmHelper) {
+    public FmpClientImpl(WebClient client, FModellingClientHelper fmHelper) {
         this.client = client;
         this.fmHelper = fmHelper;
     }

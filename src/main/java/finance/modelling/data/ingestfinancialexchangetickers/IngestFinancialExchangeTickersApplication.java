@@ -1,6 +1,7 @@
 package finance.modelling.data.ingestfinancialexchangetickers;
 
 import finance.modelling.data.ingestfinancialexchangetickers.service.impl.ExchangeServiceEodImpl;
+import finance.modelling.data.ingestfinancialexchangetickers.service.impl.TickerServiceFmpImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,7 @@ import javax.annotation.PostConstruct;
 public class IngestFinancialExchangeTickersApplication {
 
 	@Autowired private ExchangeServiceEodImpl exchangeService;
+	@Autowired private TickerServiceFmpImpl tickerServiceFmp;
 
 	public static void main(String[] args) {
 		SpringApplication.run(IngestFinancialExchangeTickersApplication.class, args);
@@ -19,6 +21,7 @@ public class IngestFinancialExchangeTickersApplication {
 	@PostConstruct
 	void run() {
 		exchangeService.ingestAllExchanges();
+//		tickerServiceFmp.ingestAllTickers();
 	}
 
 }
