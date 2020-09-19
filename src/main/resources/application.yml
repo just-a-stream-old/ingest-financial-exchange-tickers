@@ -25,7 +25,7 @@ api.publisher.kafka.bindings:
   fmp:
     fmpTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
   eod:
-    eodExchanges: dev.eod.${CONTEXT_ENV_NAME}.financial.exchanges.ingestion.${CONTEXT_VERSION}
+    eodExchanges: eod.${CONTEXT_ENV_NAME}.financial.exchanges.ingestion.${CONTEXT_VERSION}
     eodTickers: eod.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
 
 spring:

@@ -2,10 +2,12 @@ package finance.modelling.data.ingestfinancialexchangetickers.service.impl;
 
 import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.KafkaConsumerEodExchangeImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.client.contract.EodHistoricalClient;
+import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodExchangeDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.client.dto.EodTickerDTO;
 import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodTickerImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.TickerService;
 import finance.modelling.fmcommons.data.logging.LogClient;
+import finance.modelling.fmcommons.data.logging.LogConsumer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -13,10 +15,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import static finance.modelling.fmcommons.data.exception.ExceptionParser.*;
 import static finance.modelling.fmcommons.data.logging.LogClient.buildResourcePath;
+import static finance.modelling.fmcommons.data.logging.LogConsumer.determineTraceIdFromHeaders;
 
 @Service
 @Slf4j
@@ -58,13 +63,12 @@ public class TickerServiceEodImpl implements TickerService {
     public void ingestAllTickers() {
         kafkaConsumer
                 .receiveMessages(inputExchangeTopic)
-                .map(receiverRecord -> receiverRecord.value().getCode())
                 .delayElements(Duration.ofMillis(requestDelayMs))
-                .doOnNext(this::ingestTickersForExchange)
+                .doOnNext(message -> ingestTickersForExchange(message.value().getCode()))
                 .subscribe(
-                        // Todo: Add LogConsumer logging here
-                        exchange -> log.info("Successfully queried exchange from kafka: {}", exchange),
-                        error -> log.warn(String.format("Error occurred whilst querying exchanges: %s", error))
+                        message -> LogConsumer.logInfoDataItemConsumed(
+                                EodExchangeDTO.class, inputExchangeTopic, determineTraceIdFromHeaders(message.headers())),
+                        error -> LogConsumer.logErrorFailedToConsumeDataItem(EodExchangeDTO.class, inputExchangeTopic)
                 );
     }
 
@@ -74,9 +78,7 @@ public class TickerServiceEodImpl implements TickerService {
                 .doOnNext(ticker -> kafkaPublisher.publishMessage(outputTickerTopic, ticker))
                 .subscribe(
                         ticker -> LogClient.logInfoDataItemReceived(ticker.getSymbol(), EodTickerDTO.class, logResourcePath),
-                        error -> LogClient.logErrorFailedToReceiveDataItem( // Todo: Respond to errors
-                                "Unknown", EodTickerDTO.class, error, logResourcePath,
-                                List.of("Nothing"), Map.of("exchangeCode", exchangeCode))
+                        error -> respondToErrorType(error, exchangeCode)
                 );
     }
 
@@ -89,5 +91,27 @@ public class TickerServiceEodImpl implements TickerService {
                 .queryParam("fmt", "json")
                 .build()
                 .toUri();
+    }
+
+    private void respondToErrorType(Throwable error, String exchangeCode) {
+        List<String> responseToError = new LinkedList<>();
+
+        if (isClientDailyRequestLimitReached(error)) {
+            responseToError.add("Scheduled retry...");
+        }
+        else if (isKafkaException(error)) {
+            responseToError.add("Print stacktrace");
+            error.printStackTrace();
+        }
+        else if (isSaslAuthentificationException(error)) {
+            responseToError.add("Print error message");
+            log.error(error.getMessage());
+        }
+        else {
+            responseToError.add("Default");
+        }
+        LogClient.logErrorFailedToReceiveDataItem(
+                "Unknown", EodTickerDTO.class, error, logResourcePath, responseToError,
+                Map.of("exchangeCode", exchangeCode));
     }
 }

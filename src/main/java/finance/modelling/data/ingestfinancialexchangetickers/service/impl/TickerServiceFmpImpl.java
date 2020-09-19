@@ -56,8 +56,7 @@ public class TickerServiceFmpImpl implements TickerService {
                 .delayElements(Duration.ofMillis(requestDelayMs))
                 .doOnNext(ticker -> kafkaPublisher.publishMessage(outputTickerTopic, ticker))
                 .subscribe(
-                        ticker -> LogClient.logInfoDataItemReceived(
-                                ticker.getSymbol(), FmpTickerDTO.class, logResourcePath),
+                        ticker -> LogClient.logInfoDataItemReceived(ticker.getSymbol(), FmpTickerDTO.class, logResourcePath),
                         this::respondToErrorType,
                         () -> log.info("Process complete: ingestAllTickers().")
                 );

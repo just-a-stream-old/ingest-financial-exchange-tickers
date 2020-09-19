@@ -21,8 +21,8 @@ public class KafkaPublisherEodTickerImpl implements KafkaPublisher<EodTickerDTO>
     }
 
     public void publishMessage(String topic, EodTickerDTO payload) {
-        UUID traceId = UUID.randomUUID();
-        template.send(buildProducerRecordWithTraceIdHeader(topic, payload.getSymbol(),payload, traceId));
-        LogPublisher.logInfoDataItemSent(EodTickerDTO.class, topic, List.of(traceId));
+        String traceId = UUID.randomUUID().toString();
+        template.send(buildProducerRecordWithTraceIdHeader(topic, payload.getSymbol(), payload, traceId));
+        LogPublisher.logInfoDataItemSent(EodTickerDTO.class, topic, traceId);
     }
 }

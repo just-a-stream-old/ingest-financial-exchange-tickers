@@ -16,6 +16,7 @@ public class IngestFinancialExchangeTickersApplication {
 	@Autowired private TickerServiceFmpImpl tickerServiceFmp;
 	@Autowired private TickerServiceEodImpl tickerServiceEod;
 
+	// Todo: Refactor to use Reactor Kafka for publishing?
 	public static void main(String[] args) {
 		SpringApplication.run(IngestFinancialExchangeTickersApplication.class, args);
 	}

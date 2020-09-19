@@ -76,7 +76,6 @@ public class ExchangeServiceEodImpl implements ExchangeService {
         List<String> responsesToError = new LinkedList<>();
 
         if (isClientDailyRequestLimitReached(error)) {
-            // Todo: Implement stateful retry system when max requests limit reached
             responsesToError.add("Scheduled retry...");
         }
         else if (isKafkaException(error)) {

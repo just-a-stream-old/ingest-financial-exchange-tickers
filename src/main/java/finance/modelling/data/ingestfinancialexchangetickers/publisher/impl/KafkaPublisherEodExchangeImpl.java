@@ -6,7 +6,6 @@ import finance.modelling.fmcommons.data.logging.LogPublisher;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 import java.util.UUID;
 
 import static finance.modelling.fmcommons.data.helper.api.publisher.PublisherHelper.buildProducerRecordWithTraceIdHeader;
@@ -21,8 +20,8 @@ public class KafkaPublisherEodExchangeImpl implements KafkaPublisher<EodExchange
     }
 
     public void publishMessage(String topic, EodExchangeDTO payload) {
-        UUID traceId = UUID.randomUUID();
+        String traceId = UUID.randomUUID().toString();
         template.send(buildProducerRecordWithTraceIdHeader(topic, payload.getCode(),payload, traceId));
-        LogPublisher.logInfoDataItemSent(EodExchangeDTO.class, topic, List.of(traceId));
+        LogPublisher.logInfoDataItemSent(EodExchangeDTO.class, topic, traceId);
     }
 }
