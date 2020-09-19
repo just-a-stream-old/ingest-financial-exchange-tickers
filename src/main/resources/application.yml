@@ -1,25 +1,32 @@
 server.port: ${API_WEB_SERVER_PORT:7001}
 
 context:
-  envName: ${CONTEXT_ENV_NAME:dev01}
+  envName: ${CONTEXT_ENV_NAME:nonprod}
+  version: ${CONTEXT_VERSION:v1}
 
-client.api:
-  request.delay.ms: 100
+client:
   fmp:
+    request.delay.ms: 10
     baseUrl: financialmodelingprep.com/api/v3/
-    security.key: 7386dd583165a61d45491bdec637e692
+    security.key: ${CLIENT_API_FMP_SECURITY_KEY:0b5b3cc1a7e9a9e7fd45afe22440dcc4}
     resource:
-      allTickers: stock/list
-      incomeStatement: income-statement/
-      balanceSheet: balance-sheet-statement/
-      cashFlow: cash-flow-statement/
+      fmpTickers: stock/list
   eod:
+    request.delay.ms: 100
     baseUrl: eodhistoricaldata.com/api
-    security.key: 5f54dd914e6225.67240107
+    security.key: ${CLIENT_API_EOD_SECURITY_KEY:OeAFFmMliFG5orCUuwAKQ8l4WWFQ67YX}
     resource:
       eodExchanges: exchanges-list/
       eodTickers: exchange-symbol-list/
-      eodFinancials: fundamentals/
+
+api.publisher.kafka.bindings:
+  partitions: 1
+  replicas: 3
+  fmp:
+    fmpTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
+  eod:
+    eodExchanges: eod.${CONTEXT_ENV_NAME}.financial.exchanges.ingestion.${CONTEXT_VERSION}
+    eodTickers: eod.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
 
 spring:
   # Spring Kafka
@@ -34,6 +41,13 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: consumer_id_0000001
+      auto-offset-reset: earliest
+      properties.spring.json.trusted.packages: "*"
+
 
   # Spring WebFlux
   codec:
