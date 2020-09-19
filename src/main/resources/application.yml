@@ -25,7 +25,6 @@ api.publisher.kafka.bindings:
   fmp:
     fmpTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
   eod:
-#    eodExchanges: eod.${CONTEXT_ENV_NAME}.financial.exchanges.ingestion.${CONTEXT_VERSION}
     eodExchanges: dev.eod.${CONTEXT_ENV_NAME}.financial.exchanges.ingestion.${CONTEXT_VERSION}
     eodTickers: eod.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
 
@@ -43,8 +42,11 @@ spring:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      group-id: consumer_id_000001
+      auto-offset-reset: earliest
+      properties.spring.json.trusted.packages: "*"
 
 
   # Spring WebFlux
