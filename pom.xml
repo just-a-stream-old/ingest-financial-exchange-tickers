@@ -8,7 +8,7 @@
 		<version>2.3.4.RELEASE</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>finance.modelling.data</groupId>
+	<groupId>finance.modelling.data.ingest</groupId>
 	<artifactId>ingest-financial-exchange-tickers</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>ingest-financial-exchange-tickers</name>

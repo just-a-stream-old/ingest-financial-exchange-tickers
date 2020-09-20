@@ -20,7 +20,7 @@ client:
       eodTickers: exchange-symbol-list/
 
 kafka.bindings.publisher:
-  partitions: 6
+  partitions: 3
   replicas: 3
   fmp:
     fmpTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
@@ -44,7 +44,7 @@ spring:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      group-id: consumer_id_0000002
+      group-id: ingest_financial_exchange_tickers_fmp_consumer_ticker_id_00000001
       auto-offset-reset: earliest
       properties.spring.json.trusted.packages: "*"
 
