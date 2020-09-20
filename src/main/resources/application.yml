@@ -6,13 +6,13 @@ context:
 
 client:
   fmp:
-    request.delay.ms: 10
+    request.delay.ms: 150
     baseUrl: financialmodelingprep.com/api/v3/
     security.key: ${CLIENT_API_FMP_SECURITY_KEY:0b5b3cc1a7e9a9e7fd45afe22440dcc4}
     resource:
       fmpTickers: stock/list
   eod:
-    request.delay.ms: 100
+    request.delay.ms: 110
     baseUrl: eodhistoricaldata.com/api
     security.key: ${CLIENT_API_EOD_SECURITY_KEY:OeAFFmMliFG5orCUuwAKQ8l4WWFQ67YX}
     resource:
