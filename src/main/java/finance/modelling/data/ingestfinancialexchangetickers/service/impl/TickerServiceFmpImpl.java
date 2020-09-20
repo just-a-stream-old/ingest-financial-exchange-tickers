@@ -3,7 +3,9 @@ package finance.modelling.data.ingestfinancialexchangetickers.service.impl;
 import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherFmpTickerImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.client.impl.FmpClientImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.TickerService;
+import finance.modelling.fmcommons.data.helper.client.FModellingClientHelper;
 import finance.modelling.fmcommons.data.logging.LogClient;
+import finance.modelling.fmcommons.data.schema.fmp.dto.FmpIncomeStatementsDTO;
 import finance.modelling.fmcommons.data.schema.fmp.dto.FmpTickerDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,6 +25,7 @@ import static finance.modelling.fmcommons.data.logging.LogClient.buildResourcePa
 @Slf4j
 public class TickerServiceFmpImpl implements TickerService {
 
+    private final FModellingClientHelper fmHelper;
     private final FmpClientImpl fmpClient;
     private final KafkaPublisherFmpTickerImpl kafkaPublisher;
     private final String outputTickerTopic;
@@ -33,6 +36,7 @@ public class TickerServiceFmpImpl implements TickerService {
     private final Long requestDelayMs;
 
     public TickerServiceFmpImpl(
+            FModellingClientHelper fmHelper,
             FmpClientImpl fmpClient,
             KafkaPublisherFmpTickerImpl kafkaPublisher,
             @Value("${kafka.bindings.publisher.fmp.fmpTickers}") String outputTickerTopic,
@@ -40,6 +44,7 @@ public class TickerServiceFmpImpl implements TickerService {
             @Value("${client.fmp.baseUrl}") String fmpBaseUrl,
             @Value("${client.fmp.resource.fmpTickers}") String allTickersResourceUrl,
             @Value("${client.fmp.request.delay.ms}") Long requestDelayMs) {
+        this.fmHelper = fmHelper;
         this.fmpClient = fmpClient;
         this.kafkaPublisher = kafkaPublisher;
         this.outputTickerTopic = outputTickerTopic;
@@ -57,8 +62,9 @@ public class TickerServiceFmpImpl implements TickerService {
                 .doOnNext(ticker -> kafkaPublisher.publishMessage(outputTickerTopic, ticker))
                 .subscribe(
                         ticker -> LogClient.logInfoDataItemReceived(ticker.getSymbol(), FmpTickerDTO.class, logResourcePath),
-                        this::respondToErrorType,
-                        () -> log.info("Process complete: ingestAllTickers().")
+                        error ->  fmHelper.respondToErrorType(
+                                "Unknown", FmpTickerDTO.class, error, logResourcePath),
+                        () -> LogClient.logInfoProcessComplete("ingestAllTickers()")
                 );
     }
 
@@ -70,22 +76,5 @@ public class TickerServiceFmpImpl implements TickerService {
                 .queryParam("apikey", fmpApiKey)
                 .build()
                 .toUri();
-    }
-
-    protected void respondToErrorType(Throwable error) {
-        List<String> responsesToError = new LinkedList<>();
-
-        if (isKafkaException(error)) {
-            responsesToError.add("Print stacktrace");
-            error.printStackTrace();
-        }
-        else if (isSaslAuthentificationException(error)) {
-            responsesToError.add("Print error message");
-            log.error(error.getMessage());
-        }
-        else {
-            responsesToError.add("Default");
-        }
-        LogClient.logErrorFailedToReceiveDataItem("Unknown", FmpTickerDTO.class, error, logResourcePath, responsesToError);
     }
 }

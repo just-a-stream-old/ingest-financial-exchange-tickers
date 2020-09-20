@@ -1,8 +1,9 @@
 package finance.modelling.data.ingestfinancialexchangetickers.service.impl;
 
-import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodExchangeImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.client.contract.EodHistoricalClient;
+import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodExchangeImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.ExchangeService;
+import finance.modelling.fmcommons.data.helper.client.EodHistoricalClientHelper;
 import finance.modelling.fmcommons.data.logging.LogClient;
 import finance.modelling.fmcommons.data.schema.eod.dto.EodExchangeDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -12,16 +13,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.Duration;
-import java.util.LinkedList;
-import java.util.List;
 
-import static finance.modelling.fmcommons.data.exception.ExceptionParser.*;
 import static finance.modelling.fmcommons.data.logging.LogClient.buildResourcePath;
 
 @Service
 @Slf4j
 public class ExchangeServiceEodImpl implements ExchangeService {
 
+    private final EodHistoricalClientHelper eodHelper;
     private final EodHistoricalClient eodHistoricalClient;
     private final KafkaPublisherEodExchangeImpl kafkaPublisher;
     private final String outputExchangeTopic;
@@ -32,6 +31,7 @@ public class ExchangeServiceEodImpl implements ExchangeService {
     private final Long requestDelayMs;
 
     public ExchangeServiceEodImpl(
+            EodHistoricalClientHelper eodHelper,
             EodHistoricalClient eodHistoricalClient,
             KafkaPublisherEodExchangeImpl kafkaPublisher,
             @Value("${kafka.bindings.publisher.eod.eodExchanges}") String outputExchangeTopic,
@@ -39,6 +39,7 @@ public class ExchangeServiceEodImpl implements ExchangeService {
             @Value("${client.eod.baseUrl}") String eodBaseUrl,
             @Value("${client.eod.resource.eodExchanges}") String exchangesResourceUrl,
             @Value("${client.eod.request.delay.ms}") Long requestDelayMs) {
+        this.eodHelper = eodHelper;
         this.eodHistoricalClient = eodHistoricalClient;
         this.kafkaPublisher = kafkaPublisher;
         this.outputExchangeTopic = outputExchangeTopic;
@@ -56,8 +57,8 @@ public class ExchangeServiceEodImpl implements ExchangeService {
                 .doOnNext(exchange -> kafkaPublisher.publishMessage(outputExchangeTopic, exchange))
                 .subscribe(
                         exchange -> LogClient.logInfoDataItemReceived(exchange.getCode(), EodExchangeDTO.class, logResourcePath),
-                        this::respondToErrorType,
-                        () -> log.info("Process complete: ingestAllExchanges().")
+                        error -> eodHelper.respondToErrorType("Unknown", EodExchangeDTO.class, error, logResourcePath),
+                        () -> LogClient.logInfoProcessComplete("ingestAllExchanges()")
                 );
     }
 
@@ -70,25 +71,5 @@ public class ExchangeServiceEodImpl implements ExchangeService {
                 .queryParam("fmt", "json")
                 .build()
                 .toUri();
-    }
-
-    protected void respondToErrorType(Throwable error) {
-        List<String> responsesToError = new LinkedList<>();
-
-        if (isClientDailyRequestLimitReached(error)) {
-            responsesToError.add("Scheduled retry...");
-        }
-        else if (isKafkaException(error)) {
-            responsesToError.add("Print stacktrace");
-            error.printStackTrace();
-        }
-        else if (isSaslAuthentificationException(error)) {
-            responsesToError.add("Print error message");
-            log.error(error.getMessage());
-        }
-        else {
-            responsesToError.add("Default");
-        }
-        LogClient.logErrorFailedToReceiveDataItem("Unknown", EodExchangeDTO.class, error, logResourcePath, responsesToError);
     }
 }
