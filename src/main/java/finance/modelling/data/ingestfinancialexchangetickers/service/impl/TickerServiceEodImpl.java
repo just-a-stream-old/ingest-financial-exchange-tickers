@@ -4,6 +4,7 @@ import finance.modelling.data.ingestfinancialexchangetickers.api.consumer.KafkaC
 import finance.modelling.data.ingestfinancialexchangetickers.client.contract.EodHistoricalClient;
 import finance.modelling.data.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodTickerImpl;
 import finance.modelling.data.ingestfinancialexchangetickers.service.contract.TickerService;
+import finance.modelling.fmcommons.data.helper.client.EodHistoricalClientHelper;
 import finance.modelling.fmcommons.data.logging.LogClient;
 import finance.modelling.fmcommons.data.logging.LogConsumer;
 import finance.modelling.fmcommons.data.schema.eod.dto.EodExchangeDTO;
@@ -27,6 +28,7 @@ import static finance.modelling.fmcommons.data.logging.LogConsumer.determineTrac
 @Slf4j
 public class TickerServiceEodImpl implements TickerService {
 
+    private final EodHistoricalClientHelper eodHelper;
     private final KafkaConsumerEodExchangeImpl kafkaConsumer;
     private final String inputExchangeTopic;
     private final EodHistoricalClient eodHistoricalClient;
@@ -39,6 +41,7 @@ public class TickerServiceEodImpl implements TickerService {
     private final Long requestDelayMs;
 
     public TickerServiceEodImpl(
+            EodHistoricalClientHelper eodHelper,
             KafkaConsumerEodExchangeImpl kafkaConsumer,
             @Value("${kafka.bindings.publisher.eod.eodExchanges}") String inputExchangeTopic,
             EodHistoricalClient eodHistoricalClient,
@@ -48,6 +51,7 @@ public class TickerServiceEodImpl implements TickerService {
             @Value("${client.eod.baseUrl}") String eodBaseUrl,
             @Value("${client.eod.resource.eodTickers}") String tickerResourceUrl,
             @Value("${client.eod.request.delay.ms}") Long requestDelayMs) {
+        this.eodHelper = eodHelper;
         this.kafkaConsumer = kafkaConsumer;
         this.inputExchangeTopic = inputExchangeTopic;
         this.eodHistoricalClient = eodHistoricalClient;
@@ -78,7 +82,7 @@ public class TickerServiceEodImpl implements TickerService {
                 .doOnNext(ticker -> kafkaPublisher.publishMessage(outputTickerTopic, ticker))
                 .subscribe(
                         ticker -> LogClient.logInfoDataItemReceived(ticker.getSymbol(), EodTickerDTO.class, logResourcePath),
-                        error -> respondToErrorType(error, exchangeCode)
+                        error -> eodHelper.respondToErrorType("Unknown", EodExchangeDTO.class, error, logResourcePath)
                 );
     }
 
@@ -91,27 +95,5 @@ public class TickerServiceEodImpl implements TickerService {
                 .queryParam("fmt", "json")
                 .build()
                 .toUri();
-    }
-
-    private void respondToErrorType(Throwable error, String exchangeCode) {
-        List<String> responseToError = new LinkedList<>();
-
-        if (isClientDailyRequestLimitReached(error)) {
-            responseToError.add("Scheduled retry...");
-        }
-        else if (isKafkaException(error)) {
-            responseToError.add("Print stacktrace");
-            error.printStackTrace();
-        }
-        else if (isSaslAuthentificationException(error)) {
-            responseToError.add("Print error message");
-            log.error(error.getMessage());
-        }
-        else {
-            responseToError.add("Default");
-        }
-        LogClient.logErrorFailedToReceiveDataItem(
-                "Unknown", EodTickerDTO.class, error, logResourcePath, responseToError,
-                Map.of("exchangeCode", exchangeCode));
     }
 }

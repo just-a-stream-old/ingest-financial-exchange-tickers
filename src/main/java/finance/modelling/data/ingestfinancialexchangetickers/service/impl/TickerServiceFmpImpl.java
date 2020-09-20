@@ -62,8 +62,7 @@ public class TickerServiceFmpImpl implements TickerService {
                 .doOnNext(ticker -> kafkaPublisher.publishMessage(outputTickerTopic, ticker))
                 .subscribe(
                         ticker -> LogClient.logInfoDataItemReceived(ticker.getSymbol(), FmpTickerDTO.class, logResourcePath),
-                        error ->  fmHelper.respondToErrorType(
-                                "Unknown", FmpTickerDTO.class, error, logResourcePath),
+                        error ->  fmHelper.respondToErrorType("Unknown", FmpTickerDTO.class, error, logResourcePath),
                         () -> LogClient.logInfoProcessComplete("ingestAllTickers()")
                 );
     }
