@@ -45,7 +45,7 @@ public class EodHistoricalClientImpl implements EodHistoricalClient {
 
     protected Retry getRetry() {
         return Retry
-                .backoff(10, Duration.ofMillis(200))
+                .backoff(3, Duration.ofMillis(4000000))
                 .filter(eodHelper::isRetryableException);
     }
 }
