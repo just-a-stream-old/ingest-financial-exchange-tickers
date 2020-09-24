@@ -24,7 +24,7 @@ public class IngestFinancialExchangeTickersApplication {
 	void run() {
 		exchangeService.ingestAllExchanges();
 		tickerServiceEod.ingestAllTickers();
-//		tickerServiceFmp.ingestAllTickers();
+		tickerServiceFmp.ingestAllTickers();
 	}
 
 }

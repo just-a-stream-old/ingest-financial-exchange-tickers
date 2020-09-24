@@ -5,12 +5,6 @@ context:
   version: ${CONTEXT_VERSION:v1}
 
 client:
-  fmp:
-    request.delay.ms: 150
-    baseUrl: financialmodelingprep.com/api/v3/
-    security.key: ${CLIENT_API_FMP_SECURITY_KEY:0b5b3cc1a7e9a9e7fd45afe22440dcc4}
-    resource:
-      fmpTickers: stock/list
   eod:
     request.delay.ms: 110
     baseUrl: eodhistoricaldata.com/api
@@ -18,19 +12,26 @@ client:
     resource:
       eodExchanges: exchanges-list/
       eodTickers: exchange-symbol-list/
+  fmp:
+    request.delay.ms: 150
+    baseUrl: financialmodelingprep.com/api/v3/
+    security.key: ${CLIENT_API_FMP_SECURITY_KEY:0b5b3cc1a7e9a9e7fd45afe22440dcc4}
+    resource:
+      fmpTickers: stock/list
 
 kafka.bindings.publisher:
-  partitions: 3
+  partitions: 1
   replicas: 3
-  fmp:
-    fmpTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
   eod:
     eodExchanges: eod.${CONTEXT_ENV_NAME}.financial.exchanges.ingestion.${CONTEXT_VERSION}
     eodTickers: eod.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
+  fmp:
+    fmpTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
 
 spring:
   # Spring Kafka
   kafka:
+    trace.header: x-trace-id
     bootstrap-servers: ${KAFKA_BROKER_ADDRESS:localhost:9092}
     properties:
       max.request.size: 2000000
