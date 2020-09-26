@@ -31,7 +31,7 @@ kafka.bindings.publisher:
 spring:
   # Spring Kafka
   kafka:
-    trace.header: x-trace-id
+    header.traceId: x-trace-id
     bootstrap-servers: ${KAFKA_BROKER_ADDRESS:localhost:9092}
     properties:
       max.request.size: 2000000

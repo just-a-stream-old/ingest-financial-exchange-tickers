@@ -14,7 +14,7 @@ public class TopicConfig {
     private final String fmpTickerTopic;
 
     public TopicConfig(
-            @Value("${spring.kafka.trace.header}") String traceIdHeaderName,
+            @Value("${spring.kafka.header.traceId}") String traceIdHeaderName,
             @Value("${kafka.bindings.publisher.eod.eodExchanges}") String eodExchangeTopic,
             @Value("${kafka.bindings.publisher.eod.eodTickers}") String eodTickerTopic,
             @Value("${kafka.bindings.publisher.fmp.fmpTickers}") String fmpTickerTopic) {
