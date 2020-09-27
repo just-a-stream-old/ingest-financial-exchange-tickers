@@ -5,7 +5,7 @@ import finance.modelling.data.ingest.ingestfinancialexchangetickers.publisher.co
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodTickerImpl;
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.api.consumer.KafkaConsumerEodExchangeImpl;
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.config.EodApiConfig;
-import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.contract.EodTickerService;
+import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.contract.TickerEodService;
 import finance.modelling.fmcommons.data.helper.client.EodHistoricalClientHelper;
 import finance.modelling.fmcommons.data.logging.LogClient;
 import finance.modelling.fmcommons.data.logging.LogConsumer;
@@ -21,7 +21,7 @@ import static finance.modelling.fmcommons.data.logging.LogConsumer.determineTrac
 
 @Service
 @Slf4j
-public class TickerServiceEodImpl implements EodTickerService {
+public class TickerServiceEodImpl implements TickerEodService {
 
     private final EodHistoricalClientHelper eodHelper;
     private final KafkaConsumerEodExchangeImpl kafkaConsumer;
