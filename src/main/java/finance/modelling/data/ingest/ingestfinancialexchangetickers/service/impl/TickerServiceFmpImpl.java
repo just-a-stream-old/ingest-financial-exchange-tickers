@@ -4,7 +4,7 @@ import finance.modelling.data.ingest.ingestfinancialexchangetickers.publisher.co
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherFmpTickerImpl;
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.client.impl.FmpClientImpl;
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.config.FmpApiConfig;
-import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.contract.FmpTickerService;
+import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.contract.TickerFmpService;
 import finance.modelling.fmcommons.data.helper.client.FModellingClientHelper;
 import finance.modelling.fmcommons.data.logging.LogClient;
 import finance.modelling.fmcommons.data.schema.fmp.dto.FmpTickerDTO;
@@ -15,7 +15,7 @@ import java.net.URI;
 
 @Service
 @Slf4j
-public class FmpTickerServiceFmpImpl implements FmpTickerService {
+public class TickerServiceFmpImpl implements TickerFmpService {
 
     private final FModellingClientHelper fmHelper;
     private final FmpClientImpl fmpClient;
@@ -23,7 +23,7 @@ public class FmpTickerServiceFmpImpl implements FmpTickerService {
     private final KafkaPublisherFmpTickerImpl kafkaPublisher;
     private final TopicConfig topics;
 
-    public FmpTickerServiceFmpImpl(
+    public TickerServiceFmpImpl(
             FModellingClientHelper fmHelper,
             FmpClientImpl fmpClient,
             FmpApiConfig fmpApi,

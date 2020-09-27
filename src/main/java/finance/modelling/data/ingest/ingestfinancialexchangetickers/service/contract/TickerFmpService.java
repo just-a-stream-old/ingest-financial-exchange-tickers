@@ -1,6 +1,6 @@
 package finance.modelling.data.ingest.ingestfinancialexchangetickers.service.contract;
 
-public interface FmpTickerService {
+public interface TickerFmpService {
     void ingestAllQuoteTickers();
     void ingestAllFinancialStatementTickers();
 }
