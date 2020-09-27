@@ -25,4 +25,10 @@ public class KafkaPublisherFmpTickerImpl implements KafkaPublisher<FmpTickerDTO>
         template.send(buildProducerRecordWithTraceIdHeader(topic, payload.getSymbol(), payload, traceId));
         LogPublisher.logInfoDataItemSent(FmpTickerDTO.class, topic, traceId);
     }
+
+    public void publishMessage(String topic, String payload) {
+        String traceId = UUID.randomUUID().toString();
+        template.send(buildProducerRecordWithTraceIdHeader(topic, payload, payload, traceId));
+        LogPublisher.logInfoDataItemSent(FmpTickerDTO.class, topic, traceId);
+    }
 }
