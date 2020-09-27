@@ -1,9 +1,9 @@
 package finance.modelling.data.ingest.ingestfinancialexchangetickers.service.impl;
 
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.client.contract.EodHistoricalClient;
+import finance.modelling.data.ingest.ingestfinancialexchangetickers.publisher.config.TopicConfig;
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.publisher.impl.KafkaPublisherEodExchangeImpl;
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.config.EodApiConfig;
-import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.config.TopicConfig;
 import finance.modelling.data.ingest.ingestfinancialexchangetickers.service.contract.ExchangeService;
 import finance.modelling.fmcommons.data.helper.client.EodHistoricalClientHelper;
 import finance.modelling.fmcommons.data.logging.LogClient;

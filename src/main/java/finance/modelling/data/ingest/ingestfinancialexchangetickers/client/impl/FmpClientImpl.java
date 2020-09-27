@@ -9,6 +9,9 @@ import reactor.util.retry.Retry;
 
 import java.net.URI;
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Component
 public class FmpClientImpl {
@@ -21,12 +24,23 @@ public class FmpClientImpl {
         this.fmHelper = fmHelper;
     }
 
-    public Flux<FmpTickerDTO> getAllCompanyTickers(URI resourceUri) {
+    public Flux<FmpTickerDTO> getAllQuoteTickers(URI resourceUri) {
         return client
                 .get()
                 .uri(resourceUri)
                 .retrieve()
                 .bodyToFlux(FmpTickerDTO.class)
+                .onErrorMap(fmHelper::returnTechnicalException)
+                .retryWhen(getRetry());
+    }
+
+    public Flux<String> getAllStatementTickers(URI resourceUri) {
+        return client
+                .get()
+                .uri(resourceUri)
+                .retrieve()
+                .bodyToMono(String[].class)
+                .flatMapMany(Flux::fromArray)
                 .onErrorMap(fmHelper::returnTechnicalException)
                 .retryWhen(getRetry());
     }

@@ -1,4 +1,4 @@
-server.port: ${API_WEB_SERVER_PORT:7001}
+server.port: ${API_WEB_SERVER_PORT:7002}
 
 context:
   envName: ${CONTEXT_ENV_NAME:nonprod}
@@ -17,7 +17,8 @@ client:
     baseUrl: financialmodelingprep.com/api/v3/
     security.key: ${CLIENT_API_FMP_SECURITY_KEY:0b5b3cc1a7e9a9e7fd45afe22440dcc4}
     resource:
-      fmpTickers: stock/list
+      fmpQuoteTickers: stock/list
+      fmpStatementTickers: financial-statement-symbol-lists
 
 kafka.bindings.publisher:
   partitions: 1
@@ -26,7 +27,8 @@ kafka.bindings.publisher:
     eodExchanges: eod.${CONTEXT_ENV_NAME}.financial.exchanges.ingestion.${CONTEXT_VERSION}
     eodTickers: eod.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
   fmp:
-    fmpTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers.ingestion.${CONTEXT_VERSION}
+    fmpQuoteTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers_quote.ingestion.${CONTEXT_VERSION}
+    fmpStatementTickers: fmp.${CONTEXT_ENV_NAME}.financial.tickers_statement.ingestion.${CONTEXT_VERSION}
 
 spring:
   # Spring Kafka
@@ -45,7 +47,7 @@ spring:
     consumer:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      group-id: ingest_financial_exchange_tickers_fmp_consumer_ticker_id_00000001
+      group-id: ingest_financial_exchange_tickers_fmp_consumer_ticker_id_00000002
       auto-offset-reset: earliest
       properties.spring.json.trusted.packages: "*"
 
